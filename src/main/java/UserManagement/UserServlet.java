@@ -2,7 +2,9 @@ package UserManagement;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.channels.Pipe.SourceChannel;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -34,6 +36,7 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        
 
         PrintWriter out = response.getWriter();
         out.print(new JSONArray(users).toString());  // Convert List to JSON Array
@@ -45,6 +48,20 @@ public class UserServlet extends HttpServlet {
 	@ApiBody(name = "user", type = "JSON", schema = "UserSchema")
     @ResponseParam(responseCode = "201", description = "User created successfully")
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            System.out.println("Header Name: " + headerName);
+
+            Enumeration<String> headerValues = request.getHeaders(headerName);
+            while (headerValues.hasMoreElements()) {
+                String headerValue = headerValues.nextElement();
+                System.out.println("Header Value: " + headerValue);
+          }
+       }   
+    	
         // Read JSON body from request
     	BufferedReader reader = request.getReader();
         StringBuilder jsonString = new StringBuilder();
